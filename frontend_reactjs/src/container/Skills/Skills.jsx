@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 // import ReactTooltip from "react-tooltip";
+import { v4 as uuidv4 } from "uuid";
 
 import { AppWrap, MotionWrap } from "../../Wrapper";
 import { urlFor, client } from "../../client";
@@ -29,12 +30,13 @@ const Skills = () => {
 
       <div className="app__skills-container">
         <motion.div className="app__skills-list">
-          {skills.map((skill) => (
+          {skills.map((skill, index) => (
             <motion.div
               whileInView={{ opacity: [0, 1] }}
               transition={{ duration: 0.5 }}
               className="app__skills-item app__flex"
-              key={skill.name}
+              key={uuidv4()}
+              // this key is not ideal
             >
               <div
                 className="app__flex"
@@ -48,20 +50,19 @@ const Skills = () => {
         </motion.div>
         <div className="app__skills-exp">
           {experiences.map((experience) => (
-            <motion.div className="app__skills-exp-item" key={experience.year}>
+            <motion.div className="app__skills-exp-item" key={uuidv4()}>
               <div className="app__skills-exp-year">
                 <p className="bold-text">{experience.year}</p>
               </div>
               <motion.div className="app__skills-exp-works">
                 {experience.works.map((work) => (
-                  <>
+                  <div key={uuidv4()}>
                     <motion.div
                       whileInView={{ opacity: [0, 1] }}
                       transition={{ duration: 0.5 }}
                       className="app__skills-exp-work"
                       data-tip
                       data-for={work.name}
-                      key={work.name}
                     >
                       <h4 className="bold-text">{work.name}</h4>
                       <p className="p-text">{work.company}</p>
@@ -74,7 +75,7 @@ const Skills = () => {
                     >
                       {work.desc}
                     </ReactTooltip> */}
-                  </>
+                  </div>
                 ))}
               </motion.div>
             </motion.div>

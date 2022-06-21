@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import emailjs from "@emailjs/browser";
 
 import { images } from "../../constants";
 import { AppWrap, MotionWrap } from "../../Wrapper";
@@ -37,6 +38,31 @@ const Footer = () => {
     });
   };
 
+  const form = useRef();
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    emailjs
+      .sendForm(
+        process.env.REACT_APP_EMAILJS_SERVICE_ID,
+        process.env.REACT_APP_EMAILJS_TEMPLATE_ID,
+        form.current,
+        process.env.REACT_APP_EMAILJS_PUBLIC_KEY
+      )
+      .then(
+        (result) => {
+          console.log(result.text);
+          setLoading(false);
+          setIsFormSubmitted(true);
+        },
+        (error) => {
+          console.log(error.text);
+        }
+      );
+  };
+
   return (
     <>
       <h2 className="head-text"> Take a coffee and chat with me</h2>
@@ -57,13 +83,17 @@ const Footer = () => {
       </div>
 
       {!isFormSubmitted ? (
-        <div className="app__footer-form app__flex">
+        <form
+          className="app__footer-form app__flex"
+          ref={form}
+          onSubmit={sendEmail}
+        >
           <div className="app__flex">
             <input
               type="text"
               className="p-text"
               placeholder="Your Name"
-              name="username"
+              name="from_name"
               value={username}
               onChange={handleChangeInput}
             />
@@ -88,10 +118,13 @@ const Footer = () => {
               onChange={handleChangeInput}
             />
           </div>
-          <button type="button" className="p-text" onClick={handleSubmit}>
-            {loading ? "Sending" : "Send Message"}
-          </button>
-        </div>
+          <input
+            type="button"
+            className="button p-text"
+            onClick={sendEmail}
+            value={loading ? "Sending" : "Send Message"}
+          />
+        </form>
       ) : (
         <div>
           <h3 className="head-text">Thank You For Getting in Touch</h3>
